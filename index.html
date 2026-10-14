@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101411">
+  <title>Computation Hub — The Hub for Open-Source Software</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { color-scheme: dark; --bg:#101411; --panel:#171d19; --line:#2c352e; --muted:#99a49b; --text:#edf2eb; --lime:#c5f36a; --mint:#79d7b2; --peach:#f1a887; --mono:"DM Mono",monospace; --sans:"Manrope",sans-serif; }
+    * { box-sizing:border-box; }
+    .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+    body { margin:0; min-width:320px; background-color:var(--bg); background-image:linear-gradient(rgba(177,206,177,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(177,206,177,.025) 1px,transparent 1px); background-size:48px 48px; color:var(--text); font-family:var(--sans); font-size:14px; }
+    button,input { font:inherit; } button { color:inherit; }
+    .shell { width:min(1240px,calc(100% - 56px)); margin:0 auto; }
+    .topbar { height:76px; border-bottom:1px solid rgba(190,207,190,.13); background:rgba(16,20,17,.9); }
+    .topbar-inner { height:100%; display:flex; align-items:center; justify-content:space-between; gap:28px; }
+    .brand { display:inline-flex; align-items:center; gap:11px; color:var(--text); text-decoration:none; font-weight:800; white-space:nowrap; }
+    .brand-mark { width:30px; height:30px; display:grid; place-items:center; border-radius:6px; background:var(--lime); color:var(--bg); font-size:14px; font-weight:800; line-height:1; }
+    .brand span:last-child { font-size:14px; }
+    .primary-nav { display:flex; align-items:center; gap:5px; height:100%; }
+    .tab { position:relative; height:100%; padding:0 16px; border:0; background:transparent; color:var(--muted); cursor:pointer; font-size:13px; font-weight:700; }
+    .tab:hover,.tab[aria-selected="true"] { color:var(--text); }
+    .tab[aria-selected="true"]::after { position:absolute; right:16px; bottom:-1px; left:16px; height:2px; background:var(--lime); content:""; }
+    .nav-note { display:flex; align-items:center; gap:8px; color:var(--muted); font-family:var(--mono); font-size:11px; white-space:nowrap; }
+    .status-dot { width:7px; height:7px; border-radius:50%; background:var(--lime); box-shadow:0 0 12px rgba(197,243,106,.45); }
+    main { min-height:calc(100vh - 76px); }
+    .page { display:none; animation:enter .28s ease both; } .page.active { display:block; }
+    @keyframes enter { from { opacity:0; transform:translateY(5px); } to { opacity:1; transform:translateY(0); } }
+    .hero { display:grid; grid-template-columns:1fr 270px; align-items:end; gap:40px; padding:62px 0 42px; }
+    .eyebrow { display:flex; align-items:center; gap:10px; color:var(--lime); font-family:var(--mono); font-size:11px; text-transform:uppercase; }
+    .eyebrow::before { width:22px; height:1px; background:var(--lime); content:""; }
+    h1,h2,h3,p { margin-top:0; }
+    .hero h1 { max-width:710px; margin:17px 0 14px; font-size:clamp(38px,5vw,60px); line-height:1.06; font-weight:700; }
+    .hero h1 span,.highlight { color:var(--lime); }
+    .hero-copy { max-width:590px; margin:0; color:#aeb8af; font-size:15px; line-height:1.8; }
+    .hero-aside { border-left:1px solid var(--line); padding:5px 0 5px 22px; }
+    .hero-aside strong { display:block; margin-bottom:8px; font-size:13px; }
+    .hero-aside p { margin:0; color:var(--muted); font-size:12px; line-height:1.8; }
+    .hero-aside code { color:var(--mint); font-family:var(--mono); }
+    .toolbar { display:flex; align-items:center; justify-content:space-between; gap:18px; padding:18px 0; border-block:1px solid var(--line); }
+    .section-label { display:flex; align-items:center; gap:12px; font-size:13px; font-weight:800; }
+    .section-label small { color:var(--muted); font-family:var(--mono); font-size:11px; font-weight:400; }
+    .search-wrap { position:relative; width:min(300px,45vw); }
+    .search-wrap::before { position:absolute; top:10px; left:12px; color:#829087; content:"⌕"; font-size:20px; line-height:1; }
+    .search { width:100%; height:38px; padding:0 12px 0 36px; border:1px solid var(--line); border-radius:6px; outline:none; background:#141915; color:var(--text); font-size:12px; }
+    .search:focus { border-color:#76924d; box-shadow:0 0 0 3px rgba(197,243,106,.08); } .search::placeholder { color:#758078; }
+    .library-layout { display:grid; grid-template-columns:220px minmax(0,1fr); gap:34px; padding:28px 0 74px; }
+    .filters { min-width:0; }
+    .filter-heading { margin:0 0 13px; color:#87938a; font-family:var(--mono); font-size:10px; font-weight:400; text-transform:uppercase; }
+    .filter-list { display:grid; gap:3px; }
+    .filter { display:flex; align-items:center; justify-content:space-between; gap:12px; min-height:37px; padding:0 10px; border:1px solid transparent; border-radius:5px; background:transparent; color:#aab4ab; cursor:pointer; text-align:left; font-size:12px; }
+    .filter:hover { background:#171e19; color:var(--text); }
+    .filter[aria-pressed="true"] { border-color:#35422d; background:#1b2419; color:var(--lime); }
+    .filter-count { color:#728076; font-family:var(--mono); font-size:10px; }
+    .filter[aria-pressed="true"] .filter-count { color:#a3be76; }
+    .side-rule { height:1px; margin:22px 0; background:var(--line); }
+    .side-note { margin:0; color:#89948b; font-size:11px; line-height:1.8; } .side-note b { color:var(--mint); font-family:var(--mono); font-size:10px; font-weight:600; text-transform:uppercase; }
+    .results-head { display:flex; align-items:center; justify-content:space-between; margin:0 0 15px; color:#9ca89e; font-family:var(--mono); font-size:10px; text-transform:uppercase; }
+    .results-head span:last-child { color:#6f7d73; }
+    .tool-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+    .tool-card { overflow:hidden; min-width:0; border:1px solid var(--line); border-radius:7px; background:linear-gradient(145deg,rgba(27,34,29,.98),rgba(21,27,23,.98)); transition:border-color .18s ease,transform .18s ease; }
+    .tool-card:hover { transform:translateY(-2px); border-color:#526341; }
+    .visual { position:relative; display:grid; height:116px; place-items:center; overflow:hidden; border-bottom:1px solid rgba(174,194,175,.1); background-color:#151c17; }
+    .visual::before { position:absolute; inset:0; background-image:linear-gradient(rgba(157,184,157,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(157,184,157,.06) 1px,transparent 1px); background-size:19px 19px; content:""; mask-image:linear-gradient(90deg,transparent,#000 20%,#000 80%,transparent); }
+    .visual-tag { position:absolute; z-index:1; top:10px; left:11px; color:#89958b; font-family:var(--mono); font-size:9px; }
+    .visual>* { position:relative; z-index:1; }
+    .bars { display:flex; align-items:end; gap:5px; height:53px; padding:0 18px; }
+    .bars i { display:block; width:9px; border-radius:2px 2px 0 0; background:var(--lime); opacity:.85; }
+    .bars i:nth-child(2n) { background:var(--mint); opacity:.72; } .bars i:nth-child(3n) { background:var(--peach); opacity:.8; }
+    .nodes { width:122px; height:65px; } .nodes svg { width:100%; height:100%; overflow:visible; }
+    .nodes line { stroke:#60765a; stroke-width:1; } .nodes circle { fill:var(--lime); stroke:#172017; stroke-width:2; } .nodes circle:nth-of-type(2n) { fill:var(--mint); }
+    .terminal { width:176px; padding:12px 14px; border:1px solid #344138; border-radius:5px; background:rgba(12,17,13,.86); color:var(--mint); font-family:var(--mono); font-size:10px; line-height:1.8; }
+    .terminal span { color:var(--lime); }
+    .orbit { display:flex; align-items:center; justify-content:center; width:67px; height:67px; border:1px solid #647550; border-radius:50%; color:var(--lime); font-family:var(--mono); font-size:13px; box-shadow:0 0 28px rgba(197,243,106,.09),inset 0 0 20px rgba(197,243,106,.06); }
+    .orbit::before,.orbit::after { position:absolute; width:93px; height:36px; border:1px solid rgba(121,215,178,.45); border-radius:50%; content:""; transform:rotate(35deg); }
+    .orbit::after { transform:rotate(-35deg); border-color:rgba(241,168,135,.42); }
+    .tool-info { padding:14px 14px 13px; }
+    .tool-meta { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:9px; }
+    .category { color:var(--mint); font-family:var(--mono); font-size:9px; } .open-label { color:#77837a; font-family:var(--mono); font-size:9px; }
+    .tool-card h3 { margin:0 0 6px; font-size:14px; } .tool-card p { min-height:36px; margin:0; color:#95a097; font-size:11px; line-height:1.65; }
+    .tags { display:flex; gap:6px; margin-top:13px; } .tags span { padding:4px 6px; border:1px solid #303a32; border-radius:3px; color:#859188; font-family:var(--mono); font-size:9px; }
+    .empty-state { display:none; min-height:300px; align-content:center; justify-items:center; gap:12px; padding:36px 20px; border:1px dashed var(--line); border-radius:7px; background:rgba(23,29,25,.72); color:var(--muted); text-align:center; }
+    .empty-state strong { display:block; margin:0; color:var(--text); font-size:20px; }
+    .empty-state span { font-size:12px; line-height:1.8; }
+    .empty-count { color:var(--lime); font-family:var(--mono); font-size:10px!important; text-transform:uppercase; }
+    .library-footer { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-top:16px; padding:14px 0 24px; border-top:1px solid var(--line); color:var(--muted); font-size:11px; }
+    .application-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-bottom:14px; }
+    .application-card { display:flex; min-height:164px; flex-direction:column; align-items:flex-start; padding:20px; border:1px solid var(--line); border-radius:7px; background:linear-gradient(145deg,rgba(27,34,29,.98),rgba(21,27,23,.98)); color:var(--text); text-decoration:none; transition:border-color .18s ease,transform .18s ease; }
+    .application-card[hidden] { display:none; }
+    .application-card:hover,.application-card:focus-visible { transform:translateY(-2px); border-color:#526341; outline:none; }
+    .application-index,.application-status { color:var(--mint); font-family:var(--mono); font-size:10px; text-transform:uppercase; }
+    .application-card h3 { margin:17px 0 6px; font-size:18px; }
+    .application-card p { margin:0; color:var(--muted); font-size:12px; line-height:1.7; }
+    .application-status { margin-top:auto; padding-top:14px; color:#84917f; }
+    .back-link { display:inline-block; margin-bottom:22px; color:var(--mint); font-size:12px; text-decoration:none; }
+    .back-link:hover { color:var(--lime); }
+    .application-library-toolbar { display:flex; align-items:center; justify-content:space-between; gap:18px; padding:18px 0; border-block:1px solid var(--line); }
+    .application-library-toolbar span { color:#6f7d73; font-family:var(--mono); font-size:10px; text-transform:uppercase; }
+    .application-library-empty { display:grid; min-height:300px; align-content:center; justify-items:center; gap:12px; margin:28px 0 74px; padding:36px 20px; border:1px dashed var(--line); border-radius:7px; background:rgba(23,29,25,.72); color:var(--muted); text-align:center; }
+    .application-library-empty strong { color:var(--text); font-size:20px; }
+    .application-library-empty p { margin:0; font-size:12px; line-height:1.8; }
+    .content-hero { padding:68px 0 42px; }
+    .content-hero h1 { max-width:760px; margin:18px 0 15px; font-size:clamp(38px,5vw,58px); line-height:1.08; }
+    .resources-title .highlight { display:inline-block; font-size:1.2em; line-height:1; }
+    .content-hero p { max-width:620px; margin:0; color:#aeb8af; font-size:15px; line-height:1.8; }
+    .resource-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; padding:8px 0 80px; }
+    .resource-item { display:flex; align-items:start; justify-content:space-between; gap:20px; min-height:150px; padding:23px; border:1px solid var(--line); border-radius:7px; background:var(--panel); }
+    .resource-index { color:var(--lime); font-family:var(--mono); font-size:11px; }
+    .resource-item h2 { margin:14px 0 7px; font-size:19px; } .resource-item p { max-width:370px; margin:0; color:var(--muted); font-size:12px; line-height:1.7; }
+    .resource-arrow { display:grid; width:32px; height:32px; flex:0 0 32px; place-items:center; border:1px solid var(--line); border-radius:6px; color:var(--mint); font-size:19px; text-decoration:none; transition:border-color .18s ease,color .18s ease; }
+    .resource-arrow:hover,.resource-arrow:focus-visible { border-color:#526341; color:var(--lime); outline:none; }
+    .about-layout { display:grid; grid-template-columns:1.1fr .9fr; gap:56px; padding:10px 0 90px; }
+    .about-layout h2 { margin:0 0 14px; font-size:19px; } .about-layout p { color:#a0aca2; font-size:13px; line-height:1.9; }
+    .about-aside { padding:22px; border:1px solid var(--line); border-radius:7px; background:var(--panel); }
+    .about-aside h2 { font-family:var(--mono); font-size:11px; font-weight:400; text-transform:uppercase; }
+    .about-aside .founder-role { margin:0 0 9px; color:var(--mint); font-family:var(--mono); font-size:10px; text-transform:uppercase; }
+    .about-aside .founder-name { margin:0 0 15px; font-family:var(--sans); font-size:20px; font-weight:700; text-transform:none; }
+    .about-aside .founder-copy { margin:0; color:#a0aca2; font-size:13px; line-height:1.8; }
+    .roadmap { display:grid; margin-top:22px; }
+    .roadmap-item { display:grid; grid-template-columns:16px 1fr; gap:13px; padding-bottom:21px; } .roadmap-item:last-child { padding-bottom:0; }
+    .roadmap-mark { position:relative; width:9px; height:9px; margin-top:4px; border:1px solid var(--lime); border-radius:50%; }
+    .roadmap-item:not(:last-child) .roadmap-mark::after { position:absolute; top:10px; left:3px; height:32px; border-left:1px solid #40503a; content:""; }
+    .roadmap-item strong { display:block; margin-bottom:4px; font-size:12px; } .roadmap-item span { color:var(--muted); font-size:11px; line-height:1.6; }
+    footer { padding:18px 0 22px; border-top:1px solid var(--line); color:#748077; font-family:var(--mono); font-size:10px; }
+    .footer-inner { display:flex; justify-content:space-between; gap:20px; } .footer-inner span:last-child { color:#99a592; }
+    @media(max-width:900px) { .tool-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .nav-note { display:none; } .hero { grid-template-columns:1fr 210px; gap:24px; } }
+    @media(max-width:650px) {
+      .shell { width:min(calc(100% - 32px),520px); } .topbar { height:auto; } .topbar-inner { min-height:64px; flex-wrap:wrap; gap:0; }
+      .brand { height:62px; } .primary-nav { order:2; width:100%; height:46px; border-top:1px solid rgba(190,207,190,.1); }
+      .tab { flex:1; padding:0 10px; } .tab[aria-selected="true"]::after { right:10px; left:10px; }
+      .hero { grid-template-columns:1fr; padding:42px 0 29px; } .hero h1,.content-hero h1 { font-size:39px; } .hero-aside { display:none; }
+      .toolbar { align-items:start; flex-direction:column; } .search-wrap { width:100%; }
+      .library-layout { grid-template-columns:1fr; gap:23px; padding-top:21px; } .filter-list { display:flex; overflow-x:auto; padding-bottom:4px; }
+      .filter { flex:0 0 auto; min-height:34px; } .filter-heading,.side-rule,.side-note { display:none; }
+      .tool-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; } .visual { height:100px; } .tool-info { padding:11px; }
+      .tool-card h3 { font-size:12px; } .tool-card p { min-height:52px; font-size:10px; } .tool-meta { align-items:start; flex-direction:column; gap:5px; }
+      .application-grid,.resource-grid,.about-layout { grid-template-columns:1fr; gap:10px; } .resource-grid { padding-bottom:55px; }
+      .library-footer { align-items:flex-start; flex-direction:column; gap:8px; }
+      .content-hero { padding:43px 0 29px; } .about-layout { padding-bottom:55px; } .footer-inner { flex-direction:column; gap:7px; }
+    }
+    @media(max-width:370px) { .tool-grid { grid-template-columns:1fr; } .tool-card p { min-height:auto; } }
+    @media(prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.01ms!important; transition-duration:.01ms!important; } }
+  </style>
+</head>
+<body>
+  <header class="topbar"><div class="shell topbar-inner">
+    <a class="brand" href="#explore" aria-label="Computation Hub home"><span class="brand-mark">CH</span><span>Computation Hub</span></a>
+    <nav class="primary-nav" aria-label="Main navigation" role="tablist">
+      <button class="tab" id="tab-explore" role="tab" aria-selected="true" aria-controls="page-explore" data-page="explore">Explore</button>
+      <button class="tab" id="tab-resources" role="tab" aria-selected="false" aria-controls="page-resources" data-page="resources">Resources</button>
+      <button class="tab" id="tab-about" role="tab" aria-selected="false" aria-controls="page-about" data-page="about">About</button>
+    </nav>
+    <div class="nav-note"><span class="status-dot"></span>OLYMPIA XU</div>
+  </div></header>
+  <main class="shell">
+    <section class="page active" id="page-explore" role="tabpanel" aria-labelledby="tab-explore">
+      <div class="hero"><div><div class="eyebrow">The home for software and ideas.</div><h1>Your hub for<br><span>computation.</span></h1><p class="hero-copy">An open-source library of developer tools, applications, and technical resources.</p></div><aside class="hero-aside"><strong>No new updates.</strong><p>This space is ready for what comes next.</p></aside></div>
+      <div class="toolbar"><div class="section-label">Explore the library <small id="total-count">/ 02 total entries</small></div><label class="search-wrap"><span class="sr-only">Search software and applications</span><input class="search" id="search" type="search" placeholder="Search software and applications..." autocomplete="off"></label></div>
+      <div class="library-layout">
+          <aside class="filters" aria-label="Filter by category"><h2 class="filter-heading">Browse categories</h2><div class="filter-list" id="filter-list">
+          <button class="filter" data-category="all" aria-pressed="true"><span>All tools</span><span class="filter-count">02</span></button>
+          <button class="filter" data-category="Developer Tools" aria-pressed="false"><span>Developer Tools</span><span class="filter-count">00</span></button>
+          <button class="filter" data-category="Algorithms" aria-pressed="false"><span>Algorithms</span><span class="filter-count">00</span></button>
+          <button class="filter" data-category="Data & Statistics" aria-pressed="false"><span>Data &amp; Statistics</span><span class="filter-count">00</span></button>
+          <button class="filter" data-category="Simulation" aria-pressed="false"><span>Simulation</span><span class="filter-count">00</span></button>
+          <button class="filter" data-category="AI & Machine Learning" aria-pressed="false"><span>AI &amp; Machine Learning</span><span class="filter-count">00</span></button>
+          <button class="filter" data-category="Systems" aria-pressed="false"><span>Systems</span><span class="filter-count">00</span></button>
+          <button class="filter" data-category="Applications" aria-pressed="false"><span>Applications</span><span class="filter-count">02</span></button>
+        </div><div class="side-rule"></div><p class="side-note">© 2026 Computation Hub <br><b>Version 0.1.0.</b></p></aside>
+        <div><div class="results-head"><span id="results-label">Collection</span></div>
+          <div class="tool-grid" id="tool-grid"></div>
+          <section id="applications-section" aria-labelledby="results-label" hidden>
+            <div class="application-grid">
+              <a class="application-card" href="#poker"><span class="application-index">Application / 01</span><h3>Poker</h3><p>A home for poker software as it gets added to the Hub.</p><span class="application-status">OPEN LIBRARY ↗</span></a>
+              <a class="application-card" href="#motorcycle"><span class="application-index">Application / 02</span><h3>Motorcycle</h3><p>A home for motorcycle software as it gets added to the Hub.</p><span class="application-status">OPEN LIBRARY ↗</span></a>
+            </div>
+          </section>
+          <div class="empty-state" id="empty-state"><strong id="empty-title">No entries yet.</strong><span id="empty-message">Try another search or category.</span></div>
+          <div class="library-footer"><span>COMING SOON.</span></div>
+        </div>
+      </div>
+    </section>
+    <section class="page" id="page-poker" role="tabpanel" aria-labelledby="poker-title" hidden>
+      <div class="content-hero"><a class="back-link" href="#explore">← Back to Explore</a><div class="eyebrow">Applications / Poker</div><h1 id="poker-title">Poker <span class="highlight">software library.</span></h1><p>A dedicated library for poker software, tools, and computational projects.</p></div>
+      <div class="application-library-toolbar"><div class="section-label">Poker software <small>/ 00 software entries</small></div></div>
+      <div class="application-library-empty"><span class="empty-count">Poker / Software library</span><strong>No software yet.</strong><p>New poker software will be added here as the library grows.</p></div>
+    </section>
+    <section class="page" id="page-motorcycle" role="tabpanel" aria-labelledby="motorcycle-title" hidden>
+      <div class="content-hero"><a class="back-link" href="#explore">← Back to Explore</a><div class="eyebrow">Applications / Motorcycle</div><h1 id="motorcycle-title">Motorcycle <span class="highlight">software library.</span></h1><p>A dedicated library for motorcycle software, engineering tools, and computational projects.</p></div>
+      <div class="application-library-toolbar"><div class="section-label">Motorcycle software <small>/ 00 software entries</small></div></div>
+      <div class="application-library-empty"><span class="empty-count">Motorcycle / Software library</span><strong>No software yet.</strong><p>New motorcycle software will be added here as the library grows.</p></div>
+    </section>
+    <section class="page" id="page-resources" role="tabpanel" aria-labelledby="tab-resources" hidden>
+      <div class="content-hero"><div class="eyebrow">Go a little deeper</div><h1 class="resources-title">Discover more.<br></h1><p>Everything you need to understand, use, and explore.</p></div>
+      <div class="resource-grid">
+        <article class="resource-item"><div><span class="resource-index">01 / READ</span><h2>Documentation</h2><p>Clear notes on how each tools works.</p></div><a class="resource-arrow" href="#resource-documentation" target="_blank" rel="noopener" aria-label="Open Documentation in a new tab" title="Open Documentation">↗</a></article>
+        <article class="resource-item"><div><span class="resource-index">02 / EXPERIMENT</span><h2>Datasets</h2><p>Material for your own use.</p></div><a class="resource-arrow" href="#resource-datasets" target="_blank" rel="noopener" aria-label="Open Datasets in a new tab" title="Open Datasets">↗</a></article>
+        <article class="resource-item"><div><span class="resource-index">03 / CONNECT</span><h2>APIs</h2><p>COMING SOON!</p></div><a class="resource-arrow" href="#resource-apis" target="_blank" rel="noopener" aria-label="Open APIs in a new tab" title="Open APIs">↗</a></article>
+        <article class="resource-item"><div><span class="resource-index">04 / UNDERSTAND</span><h2>Guides</h2><p>Concept explanations, written to make the ideas click.</p></div><a class="resource-arrow" href="#resource-guides" target="_blank" rel="noopener" aria-label="Open Guides in a new tab" title="Open Guides">↗</a></article>
+        <article class="resource-item"><div><span class="resource-index">05 / CONTRIBUTE</span><h2>Open Source</h2><p>Contribution notes and a growing map of the repositories behind the collection.</p></div><a class="resource-arrow" href="#resource-open-source" target="_blank" rel="noopener" aria-label="Open Open Source in a new tab" title="Open Open Source">↗</a></article>
+      </div>
+    </section>
+    <section class="page" id="page-resource-detail" role="tabpanel" aria-labelledby="resource-title" hidden>
+      <div class="content-hero"><a class="back-link" href="#resources">← Back to Resources</a><div class="eyebrow" id="resource-eyebrow">Resources</div><h1 id="resource-title"></h1><p id="resource-description"></p></div>
+      <div class="application-library-toolbar"><div class="section-label"><span id="resource-entry-label"></span><small>/ 00 entries</small></div></div>
+      <div class="application-library-empty"><span class="empty-count" id="resource-kicker"></span><strong>No entries yet.</strong><p>Items will appear here as this resource library grows.</p></div>
+    </section>
+    <section class="page" id="page-about" role="tabpanel" aria-labelledby="tab-about" hidden>
+      <div class="content-hero"><div class="eyebrow">Learn more</div><h1>An idea<br><span class="highlight">worth building.</span></h1><p>An independent project combining software, computation, and innovation in one growing platform.</p></div>
+      <div class="about-layout"><div><h2>Why a computation hub?</h2><p>Computation connects ideas that might otherwise remain separate. Code offers a way to investigate how things work, test possibilities, and approach problems from various perspectives.</p><p>Computation Hub is built around that versatility. It brings together different applications of computational thinking while leaving room for unexpected connections between fields.</p><p>As the project grows, the goal is to create something people can learn from, contribute to, and use as a starting point for their own ideas.</p></div><aside class="about-aside"><p class="founder-role">Founder / Developer</p><h2 class="founder-name">Olympia Xu</h2><p class="founder-copy">"I created Computation Hub as an ongoing opportunity to experiment, learn, and build beyond the boundaries of a single discipline. I aim to turn ideas into practical projects that anyone can discover, explore, and build upon."</p></aside></div>
+    </section>
+  </main>
+  <footer><div class="shell footer-inner"><span>COMPUTATION HUB &nbsp;·&nbsp; AN OPEN-SOURCE LIBRARY</span><span>BUILT TO BE BUILT UPON</span></div></footer>
+  <script>
+    const tabs = [...document.querySelectorAll(".tab")];
+    const pages = [...document.querySelectorAll(".page")];
+    const filters = [...document.querySelectorAll(".filter")];
+    const cards = [...document.querySelectorAll(".tool-card")];
+    const applicationCards = [...document.querySelectorAll(".application-card")];
+    const search = document.querySelector("#search");
+    const resourceLibraries = {
+      documentation: { title: "Documentation", description: "Clear notes on how each tool works." },
+      datasets: { title: "Datasets", description: "Material for your own use." },
+      apis: { title: "APIs", description: "COMING SOON!" },
+      guides: { title: "Guides", description: "Concept explanations, written to make the ideas click." },
+      "open-source": { title: "Open Source", description: "Contribution notes and a growing map of the repositories behind the collection." }
+    };
+    const totalEntries = cards.length + applicationCards.length;
+    const entryLabel = totalEntries === 1 ? "total entry" : "total entries";
+    let selectedCategory = "all";
+    document.querySelector("#total-count").textContent = `/ ${String(totalEntries).padStart(2, "0")} ${entryLabel}`;
+
+    function showPage(name) {
+      const resourceKey = name.startsWith("resource-") ? name.slice("resource-".length) : "";
+      const resource = resourceLibraries[resourceKey];
+      const pageName = resource ? "resource-detail" : name;
+      const activeTab = ["poker", "motorcycle"].includes(name) ? "explore" : resource ? "resources" : name;
+      if (resource) {
+        document.querySelector("#resource-eyebrow").textContent = `Resources / ${resource.title}`;
+        document.querySelector("#resource-title").textContent = resource.title;
+        document.querySelector("#resource-description").textContent = resource.description;
+        document.querySelector("#resource-entry-label").textContent = resource.title;
+        document.querySelector("#resource-kicker").textContent = `Resources / ${resource.title}`;
+      }
+      tabs.forEach((tab) => {
+        const selected = tab.dataset.page === activeTab;
+        tab.setAttribute("aria-selected", String(selected));
+        tab.tabIndex = selected ? 0 : -1;
+      });
+      pages.forEach((page) => {
+        const selected = page.id === `page-${pageName}`;
+        page.classList.toggle("active", selected);
+        page.hidden = !selected;
+      });
+    }
+
+    function filterCards() {
+      const query = search.value.trim().toLowerCase();
+      let visible = 0;
+      cards.forEach((card) => {
+        const categoryMatches = selectedCategory === "all" || card.dataset.category === selectedCategory;
+        const queryMatches = !query || card.dataset.search.includes(query) || card.textContent.toLowerCase().includes(query);
+        const show = categoryMatches && queryMatches;
+        card.hidden = !show;
+        if (show) visible += 1;
+      });
+      let visibleApplications = 0;
+      applicationCards.forEach((card) => {
+        const categoryMatches = selectedCategory === "all" || selectedCategory === "Applications";
+        const queryMatches = !query || card.textContent.toLowerCase().includes(query);
+        const show = categoryMatches && queryMatches;
+        card.hidden = !show;
+        if (show) visibleApplications += 1;
+      });
+      const applicationsSelected = selectedCategory === "Applications";
+      const showApplications = applicationsSelected || (selectedCategory === "all" && (!query || visibleApplications > 0));
+      document.querySelector("#applications-section").hidden = !showApplications;
+      document.querySelector("#empty-state").style.display = visible || visibleApplications ? "none" : "grid";
+      document.querySelector("#empty-title").textContent = query ? "No matches found." : "No entries yet.";
+      document.querySelector("#empty-message").textContent = query ? "Try another search or category." : "Items will appear here as they’re added.";
+      document.querySelector("#results-label").textContent = selectedCategory === "all" ? query ? "Search results" : "Collection" : selectedCategory;
+    }
+
+    tabs.forEach((tab) => tab.addEventListener("click", () => {
+      const name = tab.dataset.page;
+      history.pushState(null, "", `#${name}`);
+      showPage(name);
+    }));
+    tabs.forEach((tab, index) => tab.addEventListener("keydown", (event) => {
+      if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+      event.preventDefault();
+      const next = event.key === "Home" ? 0 : event.key === "End" ? tabs.length - 1 : (index + (event.key === "ArrowRight" ? 1 : -1) + tabs.length) % tabs.length;
+      tabs[next].focus();
+      showPage(tabs[next].dataset.page);
+    }));
+    filters.forEach((filter) => filter.addEventListener("click", () => {
+      selectedCategory = filter.dataset.category;
+      filters.forEach((item) => item.setAttribute("aria-pressed", String(item === filter)));
+      filterCards();
+    }));
+    search.addEventListener("input", filterCards);
+    function isKnownPage(name) {
+      if (["explore", "resources", "about", "poker", "motorcycle"].includes(name)) return true;
+      return name.startsWith("resource-") && Boolean(resourceLibraries[name.slice("resource-".length)]);
+    }
+
+    window.addEventListener("hashchange", () => {
+      const name = location.hash.slice(1);
+      if (isKnownPage(name)) showPage(name);
+    });
+    showPage(isKnownPage(location.hash.slice(1)) ? location.hash.slice(1) : "explore");
+    filterCards();
+  </script>
+</body>
+</html>
