@@ -60,8 +60,8 @@
     .side-note { margin:0; color:#89948b; font-size:11px; line-height:1.8; } .side-note b { color:var(--mint); font-family:var(--mono); font-size:10px; font-weight:600; text-transform:uppercase; }
     .results-head { display:flex; align-items:center; justify-content:space-between; margin:0 0 15px; color:#9ca89e; font-family:var(--mono); font-size:10px; text-transform:uppercase; }
     .results-head span:last-child { color:#6f7d73; }
-    .tool-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
-    .tool-card { overflow:hidden; min-width:0; border:1px solid var(--line); border-radius:7px; background:linear-gradient(145deg,rgba(27,34,29,.98),rgba(21,27,23,.98)); transition:border-color .18s ease,transform .18s ease; }
+    .tool-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; }
+    .tool-card { overflow:hidden; min-width:0; border:1px solid var(--line); border-radius:7px; background:linear-gradient(145deg,rgba(27,34,29,.98),rgba(21,27,23,.98)); color:var(--text); text-decoration:none; transition:border-color .18s ease,transform .18s ease; }
     .tool-card:hover { transform:translateY(-2px); border-color:#526341; }
     .visual { position:relative; display:grid; height:116px; place-items:center; overflow:hidden; border-bottom:1px solid rgba(174,194,175,.1); background-color:#151c17; }
     .visual::before { position:absolute; inset:0; background-image:linear-gradient(rgba(157,184,157,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(157,184,157,.06) 1px,transparent 1px); background-size:19px 19px; content:""; mask-image:linear-gradient(90deg,transparent,#000 20%,#000 80%,transparent); }
@@ -95,6 +95,7 @@
     .application-card h3 { margin:17px 0 6px; font-size:18px; }
     .application-card p { margin:0; color:var(--muted); font-size:12px; line-height:1.7; }
     .application-status { margin-top:auto; padding-top:14px; color:#84917f; }
+    #applications-section:not([hidden]) { margin-top:20px; }
     .back-link { display:inline-block; margin-bottom:22px; color:var(--mint); font-size:12px; text-decoration:none; }
     .back-link:hover { color:var(--lime); }
     .application-library-toolbar { display:flex; align-items:center; justify-content:space-between; gap:18px; padding:18px 0; border-block:1px solid var(--line); }
@@ -135,7 +136,7 @@
       .toolbar { align-items:start; flex-direction:column; } .search-wrap { width:100%; }
       .library-layout { grid-template-columns:1fr; gap:23px; padding-top:21px; } .filter-list { display:flex; overflow-x:auto; padding-bottom:4px; }
       .filter { flex:0 0 auto; min-height:34px; } .filter-heading,.side-rule,.side-note { display:none; }
-      .tool-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; } .visual { height:100px; } .tool-info { padding:11px; }
+      .tool-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; } .visual { height:100px; } .tool-info { padding:11px; }
       .tool-card h3 { font-size:12px; } .tool-card p { min-height:52px; font-size:10px; } .tool-meta { align-items:start; flex-direction:column; gap:5px; }
       .application-grid,.resource-grid,.about-layout { grid-template-columns:1fr; gap:10px; } .resource-grid { padding-bottom:55px; }
       .library-footer { align-items:flex-start; flex-direction:column; gap:8px; }
@@ -157,21 +158,28 @@
   </div></header>
   <main class="shell">
     <section class="page active" id="page-explore" role="tabpanel" aria-labelledby="tab-explore">
-      <div class="hero"><div><div class="eyebrow">The home for software and ideas.</div><h1>Your hub for<br><span>computation.</span></h1><p class="hero-copy">An open-source library of developer tools, applications, and technical resources.</p></div><aside class="hero-aside"><strong>No new updates.</strong><p>This space is ready for what comes next.</p></aside></div>
+      <div class="hero"><div><div class="eyebrow">The home for software and ideas.</div><h1>Your hub for<br><span>computation.</span></h1><p class="hero-copy">An open-source library of developer tools, applications, and technical resources.</p></div><aside class="hero-aside"><strong>New updates!</strong><p>+1 / Algorithms / 10-18</p></aside></div>
       <div class="toolbar"><div class="section-label">Explore the library <small id="total-count">/ 02 total entries</small></div><label class="search-wrap"><span class="sr-only">Search software and applications</span><input class="search" id="search" type="search" placeholder="Search software and applications..." autocomplete="off"></label></div>
       <div class="library-layout">
           <aside class="filters" aria-label="Filter by category"><h2 class="filter-heading">Browse categories</h2><div class="filter-list" id="filter-list">
-          <button class="filter" data-category="all" aria-pressed="true"><span>All tools</span><span class="filter-count">02</span></button>
+          <button class="filter" data-category="all" aria-pressed="true"><span>All tools</span><span class="filter-count">03</span></button>
           <button class="filter" data-category="Developer Tools" aria-pressed="false"><span>Developer Tools</span><span class="filter-count">00</span></button>
-          <button class="filter" data-category="Algorithms" aria-pressed="false"><span>Algorithms</span><span class="filter-count">00</span></button>
+          <button class="filter" data-category="Algorithms" aria-pressed="false"><span>Algorithms</span><span class="filter-count">01</span></button>
           <button class="filter" data-category="Data & Statistics" aria-pressed="false"><span>Data &amp; Statistics</span><span class="filter-count">00</span></button>
           <button class="filter" data-category="Simulation" aria-pressed="false"><span>Simulation</span><span class="filter-count">00</span></button>
           <button class="filter" data-category="AI & Machine Learning" aria-pressed="false"><span>AI &amp; Machine Learning</span><span class="filter-count">00</span></button>
           <button class="filter" data-category="Systems" aria-pressed="false"><span>Systems</span><span class="filter-count">00</span></button>
           <button class="filter" data-category="Applications" aria-pressed="false"><span>Applications</span><span class="filter-count">02</span></button>
-        </div><div class="side-rule"></div><p class="side-note">© 2026 Computation Hub <br><b>Version 0.1.0.</b></p></aside>
+        </div><div class="side-rule"></div><p class="side-note">© 2026 Computation Hub <br><b>Version 1.1.0.</b></p></aside>
         <div><div class="results-head"><span id="results-label">Collection</span></div>
-          <div class="tool-grid" id="tool-grid"></div>
+          <div class="tool-grid" id="tool-grid">
+            <a class="tool-card application-card" data-category="Algorithms" data-search="sorting visualizer algorithms" href="https://olympiaxu.github.io/sorting-visualizer/web/" target="_blank" rel="noopener noreferrer" aria-label="Open Sorting Visualizer in a new tab">
+              <span class="application-index">Algorithm / 01</span>
+              <h3>Sorting Visualizer</h3>
+              <p>Interactive sorting algorithm visualizer.</p>
+              <span class="application-status">OPEN DEMO ↗</span>
+            </a>
+          </div>
           <section id="applications-section" aria-labelledby="results-label" hidden>
             <div class="application-grid">
               <a class="application-card" href="#poker"><span class="application-index">Application / 01</span><h3>Poker</h3><p>A home for poker software as it gets added to the Hub.</p><span class="application-status">OPEN LIBRARY ↗</span></a>
@@ -219,7 +227,7 @@
     const pages = [...document.querySelectorAll(".page")];
     const filters = [...document.querySelectorAll(".filter")];
     const cards = [...document.querySelectorAll(".tool-card")];
-    const applicationCards = [...document.querySelectorAll(".application-card")];
+    const applicationCards = [...document.querySelectorAll("#applications-section .application-card")];
     const search = document.querySelector("#search");
     const resourceLibraries = {
       documentation: { title: "Documentation", description: "Clear notes on how each tool works." },
